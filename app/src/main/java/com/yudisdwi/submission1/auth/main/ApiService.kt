@@ -37,10 +37,12 @@ data class LoginResponse(
 )
 
 data class LoginResult(
+    @field:SerializedName("userid")
+    val userid: String,
     @field:SerializedName("name")
     val name: String,
     @field:SerializedName("token")
-    val token: String
+    val token: String,
 )
 
 data class StoryResponse(

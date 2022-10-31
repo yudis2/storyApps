@@ -5,6 +5,7 @@ import android.animation.ObjectAnimator
 import android.content.Context
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.view.WindowInsets
 import android.view.WindowManager
@@ -15,9 +16,12 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
 import androidx.lifecycle.ViewModelProvider
 import com.yudisdwi.submission1.auth.ViewModelFactory
+import com.yudisdwi.submission1.auth.main.ApiConfig
+import com.yudisdwi.submission1.auth.main.RegisterResponse
 import com.yudisdwi.submission1.databinding.ActivitySignupBinding
-import com.yudisdwi.submission1.model.UserModel
 import com.yudisdwi.submission1.model.UserPreference
+import retrofit2.Call
+import retrofit2.Response
 
 private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "settings")
 
@@ -61,7 +65,6 @@ class SignupActivity : AppCompatActivity() {
             val name = binding.nameEditText.text.toString()
             val email = binding.emailEditText.text.toString()
             val password = binding.passwordEditText.text.toString()
-            val token = ""
             when {
                 name.isEmpty() -> {
                     binding.nameEditTextLayout.error = "Masukkan email"
@@ -73,7 +76,7 @@ class SignupActivity : AppCompatActivity() {
                     binding.passwordEditTextLayout.error = "Masukkan password"
                 }
                 else -> {
-                    signupViewModel.saveUser(UserModel(name, email, password, token, false))
+                    loginApi(name, email, password)
                     AlertDialog.Builder(this).apply {
                         setTitle("Yeah!")
                         setMessage("Akunnya sudah jadi nih. Yuk, login dan belajar coding.")
@@ -87,6 +90,25 @@ class SignupActivity : AppCompatActivity() {
             }
         }
     }
+
+    private fun loginApi(name: String, email: String, password: String) {
+        val token = ApiConfig().getApiService().registerAccount(name, email, password)
+        token.enqueue(object : retrofit2.Callback<RegisterResponse> {
+            override fun onResponse(
+                call: Call<RegisterResponse>,
+                response: Response<RegisterResponse>
+            ) {
+                if (response.isSuccessful) {
+                    Log.v("response", response.body().toString())
+                }
+            }
+
+            override fun onFailure(call: Call<RegisterResponse>, t: Throwable) {
+                TODO("Not yet implemented")
+            }
+        })
+    }
+
 
     private fun playAnimation() {
         ObjectAnimator.ofFloat(binding.imageView, View.TRANSLATION_X, -30f, 30f).apply {

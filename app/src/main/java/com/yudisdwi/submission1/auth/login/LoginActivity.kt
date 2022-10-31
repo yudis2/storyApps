@@ -9,6 +9,7 @@ import android.os.Bundle
 import android.view.View
 import android.view.WindowInsets
 import android.view.WindowManager
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.datastore.core.DataStore
@@ -16,14 +17,10 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
 import androidx.lifecycle.ViewModelProvider
 import com.yudisdwi.submission1.auth.ViewModelFactory
-import com.yudisdwi.submission1.auth.main.ApiConfig
-import com.yudisdwi.submission1.auth.main.LoginResponse
 import com.yudisdwi.submission1.auth.main.MainActivity2
 import com.yudisdwi.submission1.databinding.ActivityLoginBinding
 import com.yudisdwi.submission1.model.UserModel
 import com.yudisdwi.submission1.model.UserPreference
-import retrofit2.Call
-import retrofit2.Response
 
 private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "settings")
 
@@ -66,6 +63,10 @@ class LoginActivity : AppCompatActivity() {
         loginViewModel.getUser().observe(this) { user ->
             this.user = user
         }
+        loginViewModel.loginResponse.observe(this ) { loginResult ->
+//            loginViewModel.saveUser(UserModel("","asep","",true))
+            Toast.makeText(this, loginResult.toString(), Toast.LENGTH_SHORT).show()
+        }
     }
 
     private fun setupAction() {
@@ -79,14 +80,9 @@ class LoginActivity : AppCompatActivity() {
                 password.isEmpty() -> {
                     binding.passwordEditTextLayout.error = "Masukkan password"
                 }
-                email != user.email -> {
-                    binding.emailEditTextLayout.error = "Email tidak sesuai"
-                }
-                password != user.password -> {
-                    binding.passwordEditTextLayout.error = "Password tidak sesuai"
-                }
                 else -> {
-                    loginViewModel.login(user)
+                    loginViewModel.login()
+                    loginViewModel.service(email, password)
                     AlertDialog.Builder(this).apply {
                         setTitle("Yeah!")
                         setMessage("Anda berhasil login. Sudah tidak sabar untuk belajar ya?")
@@ -102,25 +98,12 @@ class LoginActivity : AppCompatActivity() {
                     }
                 }
             }
-            val token = ApiConfig().getApiService().loginAccount(email, password)
-            token.enqueue(object : retrofit2.Callback<LoginResponse> {
-                override fun onResponse(
-                    call: Call<LoginResponse>,
-                    response: Response<LoginResponse>
-                ) {
-                    if (response.isSuccessful) {
-                        val save = response.body()?.loginResult?.token.toString()
-                        loginViewModel.saveUser(UserModel(user.name, email, password, save, user.isLogin))
-                    }
-                }
-
-                override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
-                    TODO("Not yet implemented")
-                }
-            })
         }
     }
 
+//    private fun saveToken() {
+//        loginViewModel.saveUser(UserModel("asdsad", "asep", "", true))
+//    }
 
 
     private fun playAnimation() {
