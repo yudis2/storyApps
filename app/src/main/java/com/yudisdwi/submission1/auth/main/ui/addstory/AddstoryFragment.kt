@@ -87,6 +87,7 @@ class AddstoryFragment : Fragment() {
 
         addstoryViewModel.getUser().observe(viewLifecycleOwner) { user ->
             this.user = user
+            Toast.makeText(context, user.toString(), Toast.LENGTH_SHORT).show()
         }
 
         _binding = FragmentAddstoryBinding.inflate(inflater, container, false)

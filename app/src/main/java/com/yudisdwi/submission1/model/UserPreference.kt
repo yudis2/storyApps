@@ -34,7 +34,7 @@ class UserPreference private constructor(private val dataStore: DataStore<Prefer
 
     suspend fun login(user: UserModel) {
         dataStore.edit { preferences ->
-            preferences[TOKEN_KEY] = "Bearer " + user.token
+            preferences[TOKEN_KEY] = user.token
             preferences[STATE_KEY] = true
         }
     }
