@@ -109,8 +109,8 @@ class LoginActivity : AppCompatActivity() {
                     response: Response<LoginResponse>
                 ) {
                     if (response.isSuccessful) {
-                        val token = response.body()?.loginResult?.token
-
+                        val save = response.body()?.loginResult?.token.toString()
+                        loginViewModel.saveUser(UserModel(user.name, email, password, save, user.isLogin))
                     }
                 }
 
@@ -121,9 +121,6 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
-    private fun saveToken() {
-        loginViewModel.saveUser(user)
-    }
 
 
     private fun playAnimation() {
