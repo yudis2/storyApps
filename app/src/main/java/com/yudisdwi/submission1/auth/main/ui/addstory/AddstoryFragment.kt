@@ -87,7 +87,7 @@ class AddstoryFragment : Fragment() {
 
         addstoryViewModel.getUser().observe(viewLifecycleOwner) { user ->
             this.user = user
-            Toast.makeText(context, user.toString(), Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, user.toString(), Toast.LENGTH_LONG).show()
         }
 
         _binding = FragmentAddstoryBinding.inflate(inflater, container, false)
@@ -110,7 +110,7 @@ class AddstoryFragment : Fragment() {
         if (getFile != null) {
             val file = reduceFileImage(getFile as File)
 
-            val token = user.token
+            val token = StringBuilder("Bearer ").append(user.token).toString()
             val description =
                 "Ini adalah deksripsi gambar".toRequestBody("text/plain".toMediaType())
             val requestImageFile = file.asRequestBody("image/jpeg".toMediaTypeOrNull())

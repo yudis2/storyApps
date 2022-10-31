@@ -17,8 +17,8 @@ import retrofit2.Call
 import retrofit2.Response
 
 class LoginViewModel(private val pref: UserPreference) : ViewModel() {
-    private val _loginResponse = MutableLiveData<LoginResult?>()
-    val loginResponse: LiveData<LoginResult?> = _loginResponse
+    private val _loginResponse = MutableLiveData<LoginResult>()
+    val loginResponse: LiveData<LoginResult> = _loginResponse
     fun getUser(): LiveData<UserModel> {
         return pref.getUser().asLiveData()
     }

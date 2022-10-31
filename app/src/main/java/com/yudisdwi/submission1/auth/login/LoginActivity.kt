@@ -10,7 +10,6 @@ import android.view.View
 import android.view.WindowInsets
 import android.view.WindowManager
 import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
@@ -64,9 +63,17 @@ class LoginActivity : AppCompatActivity() {
             this.user = user
         }
         loginViewModel.loginResponse.observe(this ) { loginResult ->
-//            loginViewModel.saveUser(UserModel("","asep","",true))
-            Toast.makeText(this, loginResult.toString(), Toast.LENGTH_SHORT).show()
+            loginViewModel.saveUser(UserModel(loginResult.userId,loginResult.name,loginResult.token,true))
+            if (loginResult != null) {
+                val intent = Intent(this, MainActivity2::class.java)
+                intent.flags =
+                    Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+                startActivity(intent)
+                finish()
+            }
+            Toast.makeText(this, loginResult.toString(), Toast.LENGTH_LONG).show()
         }
+
     }
 
     private fun setupAction() {
@@ -83,27 +90,11 @@ class LoginActivity : AppCompatActivity() {
                 else -> {
                     loginViewModel.login()
                     loginViewModel.service(email, password)
-                    AlertDialog.Builder(this).apply {
-                        setTitle("Yeah!")
-                        setMessage("Anda berhasil login. Sudah tidak sabar untuk belajar ya?")
-                        setPositiveButton("Lanjut") { _, _ ->
-                            val intent = Intent(context, MainActivity2::class.java)
-                            intent.flags =
-                                Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
-                            startActivity(intent)
-                            finish()
-                        }
-                        create()
-                        show()
-                    }
                 }
             }
         }
     }
 
-//    private fun saveToken() {
-//        loginViewModel.saveUser(UserModel("asdsad", "asep", "", true))
-//    }
 
 
     private fun playAnimation() {

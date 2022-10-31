@@ -33,12 +33,12 @@ data class LoginResponse(
     @field:SerializedName("message")
     val message: String,
     @field:SerializedName("loginResult")
-    val loginResult: LoginResult? = null,
+    val loginResult: LoginResult
 )
 
 data class LoginResult(
-    @field:SerializedName("userid")
-    val userid: String,
+    @field:SerializedName("userId")
+    val userId: String,
     @field:SerializedName("name")
     val name: String,
     @field:SerializedName("token")
