@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
@@ -52,16 +53,22 @@ class HomeFragment : Fragment() {
     private fun setupViewModel() {
         homeViewModel = ViewModelProvider(
             this,
-            ViewModelFactory(UserPreference.getInstance(requireContext()!!.dataStore))
+            ViewModelFactory(UserPreference.getInstance(requireContext().dataStore))
         )[HomeViewModel::class.java]
 
         homeViewModel.getUser().observe(viewLifecycleOwner) { user ->
             if (!user.isLogin) {
                 startActivity(Intent(requireContext(), WelcomeActivity::class.java))
             } else {
-                binding.rvList
+                Toast.makeText(context, StringBuilder("Bearer ").append(user.token), Toast.LENGTH_LONG).show()
+                val token = StringBuilder("Bearer ").append(user.token).toString()
+                getStory(token)
             }
         }
+    }
+
+    private fun getStory(token: String) {
+        homeViewModel.listStory(token)
     }
 
     override fun onDestroyView() {

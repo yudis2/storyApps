@@ -82,9 +82,7 @@ interface ApiService {
     @GET("/v1/stories")
     fun getStorylist(
         @Header("Authorization") token: String,
-        @Query("page") page: Int,
         @Query("size") size: Int,
-        @Query("location") location: Int = 0
     ): Call<StoryResponse>
 }
 
